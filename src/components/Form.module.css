@@ -1,0 +1,14 @@
+.card {
+  width: 90%;
+  max-width: 550px;
+  margin: 3rem auto;
+  padding: 10px 5px;
+}
+
+.buttonContainer {
+  margin-top: 10px !important;
+}
+
+.buttonContainer button:nth-child(1){
+    margin-right: 15px ;
+}
