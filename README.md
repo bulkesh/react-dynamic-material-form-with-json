@@ -1,3 +1,7 @@
+## React Form
+User registration form using Material components.
+Dynamic form fields are created with help of configuration JSON file.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
