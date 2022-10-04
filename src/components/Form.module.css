@@ -5,10 +5,15 @@
   padding: 10px 5px;
 }
 
-.buttonContainer {
-  margin-top: 10px !important;
+.buttonContainer button:nth-child(1) {
+  margin-right: 15px;
 }
 
-.buttonContainer button:nth-child(1){
-    margin-right: 15px ;
+.marginBottom {
+  margin-bottom: 20px !important;
+}
+
+.marginBottom p {
+  bottom: -21px !important;
+  position: absolute;
 }
