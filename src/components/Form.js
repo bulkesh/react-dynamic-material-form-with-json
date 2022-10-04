@@ -2,9 +2,7 @@ import styles from './Form.module.css';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 
 import { createAccountFormElement } from '../utils/form-element';
-import { useState } from 'react';
-//import { makeStyles } from '@mui/material/styles';
-import { withStyles } from "@mui/material/styles";
+import { useCallback, useState } from 'react';
 
 const defaultState = {
     firstName: {
@@ -65,8 +63,8 @@ const defaultState = {
 const Form = () => {
     const [formValues, setFormValue] = useState(defaultState);
 
-    const onChangeHadler = (event) => {
-        const { name, value } = event.target;
+    const setValueAndValidation = (e) =>{
+        const { name, value } = e.target;
         console.log(name, " : ", value);
         setFormValue({
             ...formValues,
@@ -78,17 +76,11 @@ const Form = () => {
             }
         })
     }
-    const onBlurHandler = (event) => {
-        const { name } = event.target;
-        setFormValue({
-            ...formValues,
-            [name]: {
-                ...formValues[name],
-                touched: true
-            }
-        })
-
-        console.log("formValues : ", formValues[name]);
+    const onChangeHadler = (e) => {
+        setValueAndValidation(e)
+    }
+    const onBlurHandler = (e) => {
+        setValueAndValidation(e)
     }
     const onSubmitHandler = event => {
         event.preventDefault();
