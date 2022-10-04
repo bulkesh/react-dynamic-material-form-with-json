@@ -2,6 +2,11 @@
 User registration form using Material components.
 Dynamic form fields are created with help of configuration JSON file.
 
+### With styled-components
+`npm install @mui/material @mui/styled-engine-sc styled-components`
+
+### Roboto font
+`npm install @fontsource/roboto`
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
