@@ -1,7 +1,7 @@
 import styles from './Form.module.css';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 
-import { createAccountFormElement } from '../utils/form-element';
+import { createAccountFormElement, validator } from '../utils/form-element';
 import { useCallback, useState } from 'react';
 
 const defaultState = {
@@ -9,73 +9,182 @@ const defaultState = {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'First Name is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'First name is required',
+            },
+        ],
+        errorMessage: ''
     },
     lastName: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'Last Name is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'Last name is required',
+            },
+        ],
+        errorMessage: ''
     },
     email: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'E-mail is required',
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'Email is required',
+            },
+            {
+                test: (value) => {
+                    const pattern = /^\S+@\S+\.\S+$/;
+                    return pattern.test(value);
+                },
+                message: 'Please enter valid email address',
+            },
+        ],
+        errorMessage: ''
     },
     phone: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'Phone is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'Phone number is required',
+            },
+            {
+                test: (value) => {
+                    const pattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+                    return pattern.test(value);
+                },
+                message: 'Please enter valid phone number',
+            },
+        ],
+        errorMessage: ''
     },
     street: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'Street is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'Street is required',
+            },
+        ],
+        errorMessage: ''
     },
     city: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'City is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'City is required',
+            },
+        ],
+        errorMessage: ''
     },
     state: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'State is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'State is required',
+            },
+        ],
+        errorMessage: ''
     },
     country: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'Country is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'Country is required',
+            },
+        ],
+        errorMessage: ''
     },
     pincode: {
         value: '',
         touched: false,
         error: false,
-        errorMessage: 'Pincode is required'
+        rules: [
+            {
+                test: (value) => {
+                    return value.trim() !== '';
+                },
+                message: 'Pincode is required',
+            },
+            {
+                test: (value) => {
+                    return value.trim().length === 6;
+                },
+                message: 'Pincode length must be 6',
+            },
+        ],
+        errorMessage: ''
     },
 }
 const Form = () => {
     const [formValues, setFormValue] = useState(defaultState);
 
-    const setValueAndValidation = (e) =>{
+    const setValueAndValidation = (e) => {
         const { name, value } = e.target;
-        console.log(name, " : ", value);
+        let validate = {
+            touched: false,
+            error: false,
+            errorMessage: ''
+        };
+        formValues[name].rules.map((rule) => {
+            if(validate.error !== true){
+                if (!rule.test(value)) {
+                    validate.errorMessage = rule.message;
+                    validate.error = true;
+                    validate.touched = true;
+                } else {
+                    validate.errorMessage = '';
+                    validate.error = false;
+                }
+            }
+        });
         setFormValue({
             ...formValues,
             [name]: {
                 ...formValues[name],
                 value,
-                touched: true,
-                error: (value.trim() !== '') ? false : true
+                ...validate
             }
-        })
+        });
+
     }
+
     const onChangeHadler = (e) => {
         setValueAndValidation(e)
     }
