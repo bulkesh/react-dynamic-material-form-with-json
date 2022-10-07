@@ -1,221 +1,29 @@
 import styles from './Form.module.css';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 
-import { createAccountFormElement, validator } from '../utils/form-element';
-import { useCallback, useState } from 'react';
+import { createAccountFormElement } from '../utils/form-element';
+import useInput from '../hooks/use-input';
 
-const defaultState = {
-    firstName: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'First name is required',
-            },
-        ],
-        errorMessage: ''
-    },
-    lastName: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'Last name is required',
-            },
-        ],
-        errorMessage: ''
-    },
-    email: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'Email is required',
-            },
-            {
-                test: (value) => {
-                    const pattern = /^\S+@\S+\.\S+$/;
-                    return pattern.test(value);
-                },
-                message: 'Please enter valid email address',
-            },
-        ],
-        errorMessage: ''
-    },
-    phone: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'Phone number is required',
-            },
-            {
-                test: (value) => {
-                    const pattern = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-                    return pattern.test(value);
-                },
-                message: 'Please enter valid phone number',
-            },
-        ],
-        errorMessage: ''
-    },
-    street: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'Street is required',
-            },
-        ],
-        errorMessage: ''
-    },
-    city: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'City is required',
-            },
-        ],
-        errorMessage: ''
-    },
-    state: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'State is required',
-            },
-        ],
-        errorMessage: ''
-    },
-    country: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'Country is required',
-            },
-        ],
-        errorMessage: ''
-    },
-    pincode: {
-        value: '',
-        touched: false,
-        error: false,
-        rules: [
-            {
-                test: (value) => {
-                    return value.trim() !== '';
-                },
-                message: 'Pincode is required',
-            },
-            {
-                test: (value) => {
-                    return value.trim().length === 6;
-                },
-                message: 'Pincode length must be 6',
-            },
-        ],
-        errorMessage: ''
-    },
-}
 const Form = () => {
-    const [formValues, setFormValue] = useState(defaultState);
+    const {
+        state,
+        onChangeHadler,
+        onBlurHandler,
+        onResetHandler,
+        isFormValid,
+    } = useInput()
 
-    const setValueAndValidation = (e) => {
-        const { name, value } = e.target;
-        let validate = {
-            touched: false,
-            error: false,
-            errorMessage: ''
-        };
-        formValues[name].rules.map((rule) => {
-            if(validate.error !== true){
-                if (!rule.test(value)) {
-                    validate.errorMessage = rule.message;
-                    validate.error = true;
-                    validate.touched = true;
-                } else {
-                    validate.errorMessage = '';
-                    validate.error = false;
-                }
-            }
-        });
-        setFormValue({
-            ...formValues,
-            [name]: {
-                ...formValues[name],
-                value,
-                ...validate
-            }
-        });
-
-    }
-
-    const onChangeHadler = (e) => {
-        setValueAndValidation(e)
-    }
-    const onBlurHandler = (e) => {
-        setValueAndValidation(e)
-    }
     const onSubmitHandler = event => {
         event.preventDefault();
-        const formFields = Object.keys(formValues);
-
-        let newFormValues = { ...formValues };
-        for (let index = 0; index < formFields.length; index++) {
-            const currentField = formFields[index];
-            const currentValue = formValues[currentField].value;
-
-            if (currentValue === '') {
-                newFormValues = {
-                    ...newFormValues,
-                    [currentField]: {
-                        ...newFormValues[currentField],
-                        error: true,
-                        touched: true
-                    }
-                }
+        let formValues = {};
+        for (const key in state) {
+            if (Object.hasOwnProperty.call(state, key)) {
+                formValues[key] = state[key].value;
             }
-
         }
-        console.log("newFormValues : ", newFormValues);
-        setFormValue(newFormValues)
+        console.log(" formValues: ",formValues);
+        onResetHandler(event);
     }
-
     return (
 
         <Card className={styles.card}>
@@ -228,11 +36,12 @@ const Form = () => {
                         {
                             createAccountFormElement.slice(0, 4).map((input, index) => (
                                 <Grid key={index} xs={input.xs} sm={input.sm} item>
-                                    <TextField className={styles.marginBottom} {...input}
+                                    <TextField className={`${styles.marginBottom} ${state[input.name]['error']?styles.error:''}`} {...input}
                                         onChange={onChangeHadler}
                                         onBlur={onBlurHandler}
-                                        error={formValues[input.name]['error']}
-                                        helperText={formValues[input.name]['error'] && formValues[input.name]['errorMessage']}
+                                        value={state[input.name]['value']}
+                                        error={state[input.name]['error']}
+                                        helperText={state[input.name]['error'] && state[input.name]['errorMessage']}
                                     />
                                 </Grid>
                             ))
@@ -244,11 +53,12 @@ const Form = () => {
                         {
                             createAccountFormElement.slice(4, createAccountFormElement.length).map((input, index) => (
                                 <Grid key={index} xs={input.xs} sm={input.sm} item >
-                                    <TextField className={styles.marginBottom} {...input}
+                                    <TextField className={`${styles.marginBottom} ${state[input.name]['error']?styles.error:''}`} {...input}
                                         onChange={onChangeHadler}
                                         onBlur={onBlurHandler}
-                                        error={formValues[input.name]['error']}
-                                        helperText={formValues[input.name]['error'] && formValues[input.name]['errorMessage']}
+                                        value={state[input.name]['value']}
+                                        error={state[input.name]['error']}
+                                        helperText={state[input.name]['error'] && state[input.name]['errorMessage']}
                                     />
                                 </Grid>
                             ))
@@ -258,8 +68,8 @@ const Form = () => {
 
                     <Grid container spacing={1} className={styles.buttonContainer}>
                         <Grid item xs={12} align='right'>
-                            <Button type='reset' variant="outlined">Reset</Button>
-                            <Button type='submit' variant="contained" onClick={onSubmitHandler}>Submit</Button>
+                            <Button type='reset' variant="outlined" onClick={onResetHandler}>Reset</Button>
+                            <Button type='submit' disabled={!isFormValid} variant="contained" onClick={onSubmitHandler}>Submit</Button>
                         </Grid>
                     </Grid>
                 </form>
