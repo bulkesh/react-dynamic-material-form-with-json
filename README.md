@@ -1,6 +1,10 @@
 ## React Form
 User registration form using Material components.
 Dynamic form fields are created with help of configuration JSON file.
+Full form validation with custom and multiple error messages.
+### useInput
+useInput - Custom hook is created for state and validation management.
+useInput - Custom hook handle all form events and return form value on click submit button to parent component.
 
 ### With styled-components
 `npm install @mui/material @mui/styled-engine-sc styled-components`

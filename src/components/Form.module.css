@@ -17,3 +17,11 @@
   bottom: -21px !important;
   position: absolute;
 }
+
+.error fieldset{
+  border-color: rgba(0, 0, 0, 0.23) !important;
+  border-bottom: 2px solid #d32f2f !important;
+}
+.error label {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
